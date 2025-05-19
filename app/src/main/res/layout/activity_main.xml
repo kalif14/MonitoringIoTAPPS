@@ -12,30 +12,31 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Conexión con ESP32"
-        android:layout_marginVertical="40dp"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="40dp"
+        android:fontFamily="@font/product_sans_regular"
+        android:text="Fuel Monitoring Apps"
         android:textAlignment="center"
-        android:textSize="24sp"
-        android:fontFamily="@font/product_sans_regular"/>
+        android:textSize="24sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Introduce la IP del servidor:"
+        android:fontFamily="@font/product_sans_regular"
+        android:text="Input your Firebase Address"
         android:textAlignment="center"
-        android:textSize="16sp"
-        android:fontFamily="@font/product_sans_regular"/>
+        android:textSize="16sp" />
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
         android:layout_marginVertical="20dp">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txt_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Dirección IP"/>
+            android:hint="Your Adress" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Spinner
@@ -51,8 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="30dp"
-        android:text="Conectar"
-        android:backgroundTint="#362FD9"/>
+        android:backgroundTint="#362FD9"
+        android:text="Connect" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -80,17 +81,17 @@
                     android:layout_marginBottom="30dp"
                     android:src="@drawable/rpm"
                     android:tint="#362FD9"/>
-                
+
                 <TextView
                     android:id="@+id/tvRPM"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="120 RPM"
-                    android:textAlignment="center"
-                    android:textStyle="bold"
                     android:fontFamily="@font/product_sans_regular"
+                    android:text="Volume %"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text"
                     android:textSize="18sp"
-                    android:textColor="@color/primary_text"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -116,17 +117,17 @@
                     android:layout_marginBottom="30dp"
                     android:src="@drawable/iman"
                     android:tint="#54B435"/>
-                
+
                 <TextView
                     android:id="@+id/tvCapacitance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sí"
-                    android:textAlignment="center"
-                    android:textStyle="bold"
                     android:fontFamily="@font/product_sans_regular"
+                    android:text="Track your Sensor"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text"
                     android:textSize="18sp"
-                    android:textColor="@color/primary_text"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -160,17 +161,17 @@
                     android:layout_marginBottom="30dp"
                     android:src="@drawable/thermostat"
                     android:tint="#82AAE3"/>
-                
+
                 <TextView
                     android:id="@+id/tvTemperature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="24 °C"
-                    android:textAlignment="center"
-                    android:textStyle="bold"
                     android:fontFamily="@font/product_sans_regular"
+                    android:text="100 cm"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text"
                     android:textSize="18sp"
-                    android:textColor="@color/primary_text"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -196,17 +197,17 @@
                     android:layout_marginBottom="30dp"
                     android:src="@drawable/voltage"
                     android:tint="#FFB000"/>
-                
+
                 <TextView
                     android:id="@+id/tvVoltage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="5 V"
-                    android:textAlignment="center"
-                    android:textStyle="bold"
                     android:fontFamily="@font/product_sans_regular"
+                    android:text="10000 L"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text"
                     android:textSize="18sp"
-                    android:textColor="@color/primary_text"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
