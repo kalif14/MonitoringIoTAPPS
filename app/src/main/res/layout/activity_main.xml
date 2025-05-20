@@ -13,45 +13,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="40dp"
+        android:layout_marginVertical="20dp"
         android:fontFamily="@font/product_sans_regular"
-        android:text="Fuel Monitoring Apps"
+        android:text="Fuel Monitoring System"
         android:textAlignment="center"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tvLastUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/product_sans_regular"
-        android:text="Input your Firebase Address"
+        android:text="Last Update: 2025-05-20 08:41:28 UTC"
         android:textAlignment="center"
-        android:textSize="16sp" />
+        android:textSize="14sp"
+        android:textColor="#666666" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp">
+        android:layout_marginVertical="20dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txt_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Your Adress" />
+            android:hint="Firebase URL"
+            android:inputType="textUri" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginVertical="30dp"/>
 
     <Button
         android:id="@+id/btn_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="#362FD9"
         android:text="Connect" />
 
@@ -60,79 +59,101 @@
         android:layout_height="0dp"
         android:layout_weight="0.5"
         android:orientation="horizontal">
+
         <androidx.cardview.widget.CardView
-            android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:layout_margin="10dp"
+            android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            android:elevation="4dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
             android:focusable="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="16dp">
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="16dp"
                     android:src="@drawable/rpm"
-                    android:tint="#362FD9"/>
+                    app:tint="#362FD9"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fuel Level"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:textColor="#666666"/>
 
                 <TextView
                     android:id="@+id/tvRPM"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="Volume %"
+                    android:text="0.0%"
                     android:textAlignment="center"
                     android:textColor="@color/primary_text"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
         <androidx.cardview.widget.CardView
-            android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:layout_margin="10dp"
-            
+            android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            android:elevation="4dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
             android:focusable="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="16dp">
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="30dp"
-                    android:src="@drawable/iman"
-                    android:tint="#54B435"/>
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/thermostat"
+                    app:tint="#82AAE3"/>
 
                 <TextView
-                    android:id="@+id/tvCapacitance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Depth"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:textColor="#666666"/>
+
+                <TextView
+                    android:id="@+id/tvTemperature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="Track your Sensor"
+                    android:text="0.0 cm"
                     android:textAlignment="center"
                     android:textColor="@color/primary_text"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -140,78 +161,108 @@
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:layout_margin="10dp"
-            
+            android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
-            android:elevation="4dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
             android:focusable="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="16dp">
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="30dp"
-                    android:src="@drawable/thermostat"
-                    android:tint="#82AAE3"/>
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/voltage"
+                    app:tint="#FFB000"/>
 
                 <TextView
-                    android:id="@+id/tvTemperature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/product_sans_regular"
-                    android:text="100 cm"
+                    android:text="Volume"
                     android:textAlignment="center"
-                    android:textColor="@color/primary_text"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:clickable="true"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="16dp"
-            android:elevation="4dp"
-            android:focusable="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="30dp"
-                    android:src="@drawable/voltage"
-                    android:tint="#FFB000"/>
+                    android:textSize="14sp"
+                    android:textColor="#666666"/>
 
                 <TextView
                     android:id="@+id/tvVoltage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="10000 L"
+                    android:text="0.0 L"
                     android:textAlignment="center"
                     android:textColor="@color/primary_text"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/iman"
+                    app:tint="#54B435"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Connection"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:textColor="#666666"/>
+
+                <TextView
+                    android:id="@+id/tvCapacitance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/product_sans_regular"
+                    android:text="Disconnected"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/product_sans_regular"
+        android:text="User: kalif14"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:textColor="#666666" />
 
 </LinearLayout>

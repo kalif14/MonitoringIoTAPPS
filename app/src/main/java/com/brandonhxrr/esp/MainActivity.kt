@@ -1,100 +1,179 @@
 package com.brandonhxrr.esp
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.Timer
-import java.util.TimerTask
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var tvRPM: TextView
-    lateinit var tvTemp: TextView
-    lateinit var tvCapacitance: TextView
-    lateinit var tvVoltage: TextView
-    lateinit var txtIP: TextInputEditText
-    lateinit var btnConnect: Button
+    // UI Elements
+    private lateinit var tvLastUpdate: TextView
+    private lateinit var tvUserInfo: TextView
+    private lateinit var tvDepth: TextView
+    private lateinit var tvVolume: TextView
+    private lateinit var tvPercentage: TextView
+    private lateinit var tvConnectionStatus: TextView
+    private lateinit var txtFirebaseUrl: TextInputEditText
+    private lateinit var btnConnect: Button
+
+    // Firebase
+    private lateinit var database: DatabaseReference
+    private var valueEventListener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        tvRPM = findViewById(R.id.tvRPM)
-        tvTemp = findViewById(R.id.tvTemperature)
-        tvCapacitance = findViewById(R.id.tvCapacitance)
-        tvVoltage = findViewById(R.id.tvVoltage)
-        txtIP = findViewById(R.id.txt_ip)
-        btnConnect = findViewById(R.id.btn_connect)
+        // Initialize views and Firebase
+        initializeViews()
+        initializeFirebase()
+        setupClickListeners()
 
-        btnConnect.setOnClickListener {
-            val ipAddress = txtIP.text.toString()
-            if (isIPAddress(ipAddress)) {
-                val timer = Timer()
+        // Set initial timestamp and user info
+        updateTimestamp()
+        tvUserInfo.text = "User: kalif14"
+    }
 
-                timer.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        fetchDataFromESP32(ipAddress)
-                    }
-                }, 0, 1500)
-            } else {
-                Toast.makeText(
-                    applicationContext,
-                    "No es una dirección IP válida",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private fun initializeViews() {
+        try {
+            // Find all views by their IDs
+            tvLastUpdate = findViewById(R.id.tvLastUpdate)
+            tvUserInfo = findViewById(R.id.tvUserInfo)
+            tvDepth = findViewById(R.id.tvTemperature)
+            tvVolume = findViewById(R.id.tvVoltage)
+            tvPercentage = findViewById(R.id.tvRPM)
+            tvConnectionStatus = findViewById(R.id.tvCapacitance)
+            txtFirebaseUrl = findViewById(R.id.txt_ip)
+            btnConnect = findViewById(R.id.btn_connect)
 
+            // Set initial values
+            tvDepth.text = "0.0 cm"
+            tvVolume.text = "0.0 L"
+            tvPercentage.text = "0.0%"
+            tvConnectionStatus.text = "Disconnected"
+        } catch (e: Exception) {
+            showToast("Error initializing views: ${e.message}")
         }
     }
 
-    private fun fetchDataFromESP32(ip: String) {
+    private fun initializeFirebase() {
         try {
-            val url = URL("http://$ip/")
-            //val url = URL("https://9d95-201-141-109-189.ngrok.io/")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
+            database = FirebaseDatabase.getInstance().reference.child("fuelData")
+        } catch (e: Exception) {
+            showToast("Firebase initialization error: ${e.message}")
+        }
+    }
 
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-            val responseStringBuilder = StringBuilder()
-            var line: String?
+    private fun setupClickListeners() {
+        btnConnect.setOnClickListener {
+            val firebaseUrl = txtFirebaseUrl.text.toString().trim()
+            if (firebaseUrl.isNotEmpty()) {
+                connectToFirebase()
+            } else {
+                showToast("Please enter Firebase URL")
+            }
+        }
+    }
 
-            while (reader.readLine().also { line = it } != null) {
-                responseStringBuilder.append(line)
+    private fun connectToFirebase() {
+        try {
+            // Remove existing listener if any
+            valueEventListener?.let {
+                database.removeEventListener(it)
             }
 
-            val response = responseStringBuilder.toString()
+            valueEventListener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    try {
+                        if (!snapshot.exists()) {
+                            updateConnectionStatus("No Data")
+                            return
+                        }
 
-            if (response.isNotEmpty()) {
-                val json = JSONObject(response)
-                val rpm = json.getDouble("rpm")
-                val capacitance = json.getDouble("capacitancia")
-                val temperature = json.getDouble("temperatura")
-                val voltage = json.getDouble("voltaje")
+                        // Get values with null safety
+                        val depth = snapshot.child("depth").getValue(Float::class.java) ?: 0f
+                        val volume = snapshot.child("volume").getValue(Float::class.java) ?: 0f
+                        val percentage = snapshot.child("percentage").getValue(Float::class.java) ?: 0f
 
-                val isMagneticField = if(capacitance == 100.0) "No" else "Si"
+                        // Update UI
+                        updateValues(depth, volume, percentage)
+                        updateConnectionStatus("Connected")
+                        updateTimestamp()
 
-                Handler(Looper.getMainLooper()).post {
-                    tvRPM.text = String.format("%.0f rpm", rpm)
-                    tvTemp.text = String.format("%.2f °C", temperature)
-                    tvCapacitance.text = isMagneticField
-                    tvVoltage.text = String.format("%.2f V", voltage)
+                    } catch (e: Exception) {
+                        updateConnectionStatus("Error")
+                        showToast("Error reading data: ${e.message}")
+                    }
                 }
 
+                override fun onCancelled(error: DatabaseError) {
+                    handleDatabaseError(error)
+                }
             }
+
+            // Add the listener to Firebase
+            database.addValueEventListener(valueEventListener!!)
+            showToast("Connecting to Firebase...")
+
         } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e("MainActivity", "Error: ${e.message}")
+            updateConnectionStatus("Error")
+            showToast("Connection error: ${e.message}")
+        }
+    }
+
+    private fun updateValues(depth: Float, volume: Float, percentage: Float) {
+        runOnUiThread {
+            tvDepth.text = String.format("%.1f cm", depth)
+            tvVolume.text = String.format("%.1f L", volume)
+            tvPercentage.text = String.format("%.1f%%", percentage)
+        }
+    }
+
+    private fun updateConnectionStatus(status: String) {
+        runOnUiThread {
+            tvConnectionStatus.text = status
+        }
+    }
+
+    private fun updateTimestamp() {
+        val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            .format(Date())
+        tvLastUpdate.text = "Last Update: $timestamp UTC"
+    }
+
+    private fun handleDatabaseError(error: DatabaseError) {
+        val message = when (error.code) {
+            DatabaseError.PERMISSION_DENIED -> "Permission denied"
+            DatabaseError.NETWORK_ERROR -> "Network error"
+            DatabaseError.DISCONNECTED -> "Disconnected"
+            else -> "Database Error: ${error.message}"
+        }
+        updateConnectionStatus("Error")
+        showToast(message)
+    }
+
+    private fun showToast(message: String) {
+        runOnUiThread {
+            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clean up listener
+        valueEventListener?.let {
+            database.removeEventListener(it)
         }
     }
 }
